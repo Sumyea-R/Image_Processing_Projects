@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Training Dataset</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='dataset_style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Training Dataset</h1>
+        <div class="top-bar">
+            <a href="{{ url_for('index') }}">← Back to Classifier</a>
+            <a href="{{ url_for('download_dataset') }}" class="download-btn">Download Full Dataset (ZIP)</a>
+            <form action="{{ url_for('upload_training_images') }}" method="POST" enctype="multipart/form-data" class="upload-form">
+                <label for="label">Label:</label>
+                <select name="label" required>
+                    <option value="Capacitor">Capacitor</option>
+                    <option value="IC">IC</option>
+                    <option value="Resistor">Resistor</option>
+                </select>
+            
+                <label for="files">Select Images:</label>
+                <input type="file" name="files" multiple accept="image/*" required>
+            
+                <button type="submit">Upload Images</button>
+            </form>            
+        </div>
+
+        <div class="grid" id="imageGrid">
+            {% for img in images %}
+            <div class="card" data-label="{{ img.label }}" data-filename="{{ img.filename }}">
+                <img src="{{ url_for('static', filename=img.filepath.split('static/')[-1]) }}" alt="{{ img.label }}">
+                <div class="card-info">
+                    <p><strong>{{ img.filename }}</strong></p>
+                    <p>{{ img.label }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

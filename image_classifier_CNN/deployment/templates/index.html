@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imaget Classifier</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Image Classifier</h1>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <label for="file">Choose an image:</label>
+            <input type="file" id="file" name="file" accept="image/*" onchange="previewImage(event)">
+            <button type="submit">Classify Image</button>
+        </form>
+
+        <div id="imagePreview">
+            <h3>Selected Image Preview:</h3>
+            <img id="preview" src="" alt="Image Preview" style="max-width: 300px; max-height: 300px; display: none;">
+        </div>
+        
+        <div id="result"></div>
+        <div class="nav-links">
+            <a href="{{ url_for('dataset') }}">📁 View Training Dataset</a>
+            <a href="{{ url_for('history') }}">📊 View Classification History</a>
+            <a href="{{ url_for('retrain_model') }}" class="retrain-btn">🔁 Retrain Classification Model</a>
+        </div>
+        
+    </div>
+
+    <script>
+        // Assign Flask's url_for() output to a JavaScript variable
+        const predictUrl = "{{ url_for('predict') }}";
+
+        // Function to handle image preview
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            const preview = document.getElementById('preview');
+
+            reader.onload = function() {
+                preview.src = reader.result;
+                preview.style.display = 'block';  // Show the image
+            };
+
+            if (file) {
+                reader.readAsDataURL(file);  // Convert the file to a data URL
+            } else {
+                preview.src = '';  // Reset if no file is selected
+                preview.style.display = 'none';
+            }
+            document.getElementById('result').innerHTML = '<br>';
+        }
+
+        const form = document.getElementById('uploadForm');
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData(form);
+
+            try {
+                // Use the variable instead of inline Jinja template
+                const response = await fetch(predictUrl, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                document.getElementById('result').innerHTML = `Prediction: ${result.class}, Confidence: ${(result.confidence * 100).toFixed(2)}%`;
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('result').innerHTML = 'Error occurred during the prediction.';
+            }
+        });
+    </script>
+</body>
+</html>

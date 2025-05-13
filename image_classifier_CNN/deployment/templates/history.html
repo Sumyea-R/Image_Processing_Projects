@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Classification History</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Classification History</h1>
+        <div class="top-bar">
+            <a href="{{ url_for('index') }}">← Back to Classifier</a>
+            <a href="{{ url_for('download_history') }}" class="download-btn">Download History as CSV</a>
+        </div>
+        <table border="1" style="width:100%; margin-top: 20px;">
+            <tr>
+                <th>Image</th>
+                <th>Filename</th>
+                <th>Class</th>
+                <th>Confidence</th>
+            </tr>
+            {% for img in images %}
+            <tr>
+                <td><img src="{{ url_for('static', filename='uploads/' + img.filename) }}" width="100"></td>
+                <td>{{ img.filename }}</td>
+                <td>{{ img.predicted_class }}</td>
+                <td>{{ (img.confidence * 100) | round(2) }}%</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>

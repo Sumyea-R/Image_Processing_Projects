@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Retraining Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>✅ Model Retrained</h1>
+        <p><strong>Test Accuracy:</strong> {{ (accuracy * 100) | round(2) }}%</p>
+        <p><strong>F1 Score:</strong> {{ f1 | round(2) }}</p>
+        <h2>Confusion Matrix</h2>
+        <img src="data:image/png;base64,{{ cm_img }}" alt="Confusion Matrix" style="max-width: 500px;">
+
+        <br><br>
+        <a href="{{ url_for('index') }}">← Back to Classifier</a>
+    </div>
+</body>
+</html>
